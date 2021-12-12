@@ -13,13 +13,14 @@ const Signup = () => {
 
     let firstName = $('[name="firstName"]').val()
     let lastName = $('[name="lastName"]').val()
-    let email = $('[name="email"]').val()
-    let password = $('[name="password"]').val()
-    
     firstName = firstName.charAt(0).toUpperCase() + firstName.slice(1)
     lastName = lastName.charAt(0).toUpperCase() + lastName.slice(1)
+     
+    const email = $('[name="email"]').val()
+    const password = $('[name="password"]').val()
+    
 
-    let payroll = new Payroll({
+    const payroll = new Payroll({
       employeeName: firstName + " " + lastName,
       payPerInOut: 100,
       attendances: []
