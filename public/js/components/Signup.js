@@ -13,20 +13,25 @@ const Signup = () => {
 
     let firstName = $('[name="firstName"]').val()
     let lastName = $('[name="lastName"]').val()
+    let email = $('[name="email"]').val()
+    let password = $('[name="password"]').val()
+    
     firstName = firstName.charAt(0).toUpperCase() + firstName.slice(1)
     lastName = lastName.charAt(0).toUpperCase() + lastName.slice(1)
 
-    const newUser = new User(
+    let payroll = new Payroll({
+      employeeName: firstName + " " + lastName,
+      payPerInOut: 100,
+      attendances: []
+    })
+    
+    const newUser = new User({
       firstName,
       lastName,
-      $('[name="email"]').val(),
-      $('[name="password"]').val(),
-      new Payroll(
-        firstName + " " + lastName,
-        100,
-        []
-      )
-    )
+      email,
+      password,
+      payroll
+    })
 
     const db = new UserDB()
 
