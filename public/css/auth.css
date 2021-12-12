@@ -1,0 +1,50 @@
+.auth-form,
+.auth-form form {
+  display: grid;
+  place-items: center;
+}
+
+.auth-form form {
+  margin-top: 1rem;
+}
+
+
+.auth-form section {
+  position: relative;
+}
+.auth-form input {
+  margin-top: 2rem;
+  padding: 0.8rem;
+}
+.auth-form label {
+  background-color: white;
+  padding: 0px 5px 0px 5px;
+  pointer-events: none;
+  top: 48px;
+  left: 10px;
+  position: absolute;
+  font-size: 0.85rem;
+  justify-self: start;
+  transition: all 0.2s ease-in-out;
+}
+.auth-form input:not(:placeholder-shown) + label,
+.auth-form input:focus ~ label {
+  top: 25px;
+  font-size: 0.7rem;
+}
+
+
+.auth-form #status {
+  font-size: 0.8rem;
+  font-style: italic;
+  display: none; 
+  margin: 10px 0px 10px 0px;
+}
+
+.auth-form button {
+  margin-top: 1rem;
+}
+.auth-form a {
+  font-size: small;
+  margin-top: 0.85rem;
+}

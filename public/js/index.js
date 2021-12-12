@@ -1,19 +1,10 @@
-import App from "./App.js"
+import Home from './components/Home.js'
+import { render } from '../../modules/fake-react/index.js'
+import Login from './components/Login.js'
+import Signup from './components/Signup.js'
+import { Auth } from './models.js'
 
-export default class AppDOM {
-  /**
-   * Inserts components to HTML
-   * @param {[ strHTML: string, callback: () => void ][]} components 
-   * @param {string} rootId 
-   */
-  render(components, rootId) {
-    components.forEach(([ strHTML, callback ]) => {
-
-      $(`#${rootId}`).append(strHTML)
-      
-      callback !== undefined && callback()
-    })
-  }
-}
-
-App(new AppDOM())
+render([Home, Login, Signup], 'root', () => {
+  if (Auth.loggedInUser) return Home()
+  else return Login()
+})
