@@ -1,36 +1,35 @@
-import { useState, updateElem } from "../../../modules/fake-react/index.js"
-import { Auth, User } from "../models.js"
+import { useState, waitElemsToLoad } from "../../../modules/fake-react/index.js"
+import { Auth } from "../models.js"
 
 const Home = () => {
   
-  // let [sample, sampleSet] = useState(1)
+  /** let [sample, sampleSet] = useState(1)
 
-  // $('#btn').on('click', () => {
-  //   sampleSet(sample++)
-  //   console.log(sample)
-  // })
-
-  $('#logout').on('click', () => {
-    Auth.logout()
-  })
+  $('#btn').on('click', () => {
+    sampleSet(sample++)
+    console.log(sample)
+  }) */
 
   const template = (data) => `<div class="data">${data}</div>`
   const user = Auth.loggedInUser
-  console.log(user);
 
-  let finalString = ''
-
+  let attendanceDiv = ''
   user.payroll.attendances.forEach(d => {
-    let date = new Date(d)
-    finalString = finalString.concat(date) + '<br><br>'
+    attendanceDiv = attendanceDiv.concat(new Date(d)) + '<br><br>'
   })
-  $('.table-data').append(template(user.fullName))
-  $('.table-data').append(template(user.payroll.payPerInOut))
-  $('.table-data').append(template(finalString))
-  $('.table-data').append(template(user.payroll.grossPay))
 
+  waitElemsToLoad('.table-data', () => {
+    $('#logout').on('click', () => {
+      Auth.logout()
+    })
 
-  return `
+    $('.table-data').append(template(user.fullName))
+    $('.table-data').append(template("₱ " + user.payroll.payPerInOut))
+    $('.table-data').append(template(attendanceDiv))
+    $('.table-data').append(template("₱ " + user.payroll.grossPay))
+  })
+
+  return (`
     <div id="home">
       <button id="logout">Logout</button>
 
@@ -45,7 +44,7 @@ const Home = () => {
         <div class="table-data"></div>
       </div>
     </div>
-  `
+  `)
 }
 
 export default Home

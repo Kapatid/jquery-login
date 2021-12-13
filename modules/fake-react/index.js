@@ -7,23 +7,19 @@
  * @param {() => string} authPage 
  */
 function render(pages, rootId, authPage) {
-  if (authPage !== undefined) {
-    $(`#${rootId}`).html(authPage) 
-    authPage()
-  } else {
-    $(`#${rootId}`).html(pages[0]) 
-    pages[0]()
-  }
+  authPage !== undefined
+    ? $(`#${rootId}`).html(authPage)
+    : $(`#${rootId}`).html(pages[0])
 }
 
 /**
  * Function for making observable variables.
  * 
- * @param {any} j 
+ * @param {any} data 
  * @returns [getter, setter]
  */
-function useState(j) {
-  const p = new Proxy({ watch: j }, {
+function useState(data) {
+  const p = new Proxy({ watch: data }, {
     get: function(target, prop, receiver) {
       return prop in target ? target[prop] : null
     }
@@ -37,18 +33,33 @@ function useState(j) {
 }
 
 /**
- * Update element.
+ * Update element based on selector.
  * 
- * @param {string} id 
+ * @param {string} selector 
  * @param {Function} page 
  */
-function updateElem(id , page) {
-  $(`#${id}`).html(page())
-  page()
+function updateElem(selector , page) {
+  $(selector).html(page)
+}
+
+/**
+ * Execute codes after HTML strings have been loaded first
+ * based on selector.
+ * 
+ * @param {string} selector id/class
+ * @param {Function} func 
+ */
+function waitElemsToLoad(selector, func) {
+  const checkExist = setInterval(() => {
+    if ($(selector).length) {
+      func()
+      clearInterval(checkExist)
+    }
+  }, 100)
 }
 
 export {
-  render, useState, updateElem
+  render, useState, updateElem, waitElemsToLoad
 }
 
 // (

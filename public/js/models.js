@@ -14,11 +14,9 @@
 export class Payroll {
   #grossPay = 0
 
-  constructor(options = {
-    employeeName: '', 
-    payPerInOut: '', 
-    attendances: []
-  }) {
+  constructor(
+    options = { employeeName: '', payPerInOut: '', attendances: [] }
+  ) {
     options && Object.assign(this, options)
   }
 
@@ -37,25 +35,19 @@ export class Payroll {
 
 export class User {
 
-  constructor(options = {
-    firstName: '', 
-    lastName: '', 
-    email: '', 
-    password: '', 
-    payroll: {}
-  }) {
+  constructor(
+    options = { firstName: '', lastName: '', email: '', password: '', payroll: {}}
+  ) {
     options && Object.assign(this, options)
   }
 
   /**
-   * Returns total price of items in cart
+   * Returns concatenated firstName and lastName
    * @returns {string} fullName
    */
-  get fullName() {
-    let test = this.firstName + " " + this.lastName
-    return test
-  }
+  get fullName() { return this.firstName + " " + this.lastName }
 }
+
 
 export class UserDB {
   #users = []
@@ -70,9 +62,7 @@ export class UserDB {
    * Returns all users
    * @returns {User[]} users
    */
-  get users() {
-    return this.#users
-  }
+  get users() { return this.#users }
 
   /**
    * Add user to database.
@@ -80,22 +70,21 @@ export class UserDB {
    * @returns {null | User} User or null
    */
   signUp(user) {
-    const userExists = 
-      this.#users ? this.#users.some(u => u.email === user.email) : false
+    const userExists = this.#users 
+      ? this.#users.some(u => u.email === user.email) : false
 
     if (!userExists) {
       this.#users.push(user)
       localStorage.setItem('Users', JSON.stringify(this.#users))
 
       return user
-    } else {
-      return null
-    }
+    } else return null
   }
 
   /**
-   * 
+   * Update user in DB
    * @param {User} updatedUser 
+   * @returns {void | User}
    */
   updateUser(updatedUser) {
     const newList = this.#users.map(user => {
@@ -109,34 +98,38 @@ export class UserDB {
   }
 }
 
+
 export class Auth {
   /**
    * @returns {User} The currently logged in user.
    */
   static get loggedInUser() {
     const result = JSON.parse(localStorage.getItem('LoggedIn'))
-    const obj =  result ? new User({...result, payroll: new Payroll(result.payroll)}) : null
+    const obj = result 
+      ? new User({...result, payroll: new Payroll(result.payroll)}) : null
+
     return obj
   }
 
   /**
-   * @param {User} user
+   * @param {string} email
+   * @param {string} password
    * @returns {null | User} User or null
    */
   static loginUser(email, password) {
     const db = new UserDB()
     const users = db.users
 
-    const userFound = users.find(u => u.email === email && u.password === password)
+    const userFound = users.find(
+      u => u.email === email && u.password === password
+    )
 
     if (userFound) {
       localStorage.setItem('LoggedIn', JSON.stringify(userFound))
       location.reload()
 
       return userFound
-    } else {
-      return null
-    }
+    } else return null
   }
 
   static logout() {

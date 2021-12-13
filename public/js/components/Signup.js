@@ -1,52 +1,45 @@
-import { updateElem } from "../../../modules/fake-react/index.js"
-import { Auth, Payroll, User, UserDB } from "../models.js"
+import { updateElem, waitElemsToLoad } from "../../../modules/fake-react/index.js"
+import { Payroll, User, UserDB } from "../models.js"
 import Login from "./Login.js"
 
 const Signup = () => { 
 
-  $('#login-page').on('click', () => {
-    updateElem('root', Login)
-  })
+  waitElemsToLoad('.auth-form ', () => {
 
-  $('form').submit((e) => {
-    e.preventDefault()
+    $('#login-page').on('click', () => updateElem('#root', Login) )
 
-    let firstName = $('[name="firstName"]').val()
-    let lastName = $('[name="lastName"]').val()
-    firstName = firstName.charAt(0).toUpperCase() + firstName.slice(1)
-    lastName = lastName.charAt(0).toUpperCase() + lastName.slice(1)
-     
-    const email = $('[name="email"]').val()
-    const password = $('[name="password"]').val()
-    
+    $('form').submit((e) => {
+      e.preventDefault()
 
-    const payroll = new Payroll({
-      employeeName: firstName + " " + lastName,
-      payPerInOut: 100,
-      attendances: []
+      const firstName = $('[name="firstName"]').val().charAt(0).toUpperCase()
+        + firstName.slice(1)
+      const lastName = $('[name="lastName"]').val().charAt(0).toUpperCase() 
+        + lastName.slice(1)
+      const email = $('[name="email"]').val()
+      const password = $('[name="password"]').val()
+      
+      const newUser = new User({ firstName, lastName, email, password,
+        payroll: new Payroll({
+          employeeName: firstName + " " + lastName,
+          payPerInOut: 100,
+          attendances: []
+        })
+      })
+
+      const db = new UserDB()
+
+      if (db.signUp(newUser) === null ) {
+        $('#status').text('Email is already in use.')
+        $('#status').css({ display: 'grid', color: 'red' })
+      } else {
+        $('#status').text('User successfully created!')
+        $('#status').css({ display: 'grid', color: 'green' })
+      }
     })
-    
-    const newUser = new User({
-      firstName,
-      lastName,
-      email,
-      password,
-      payroll
-    })
-
-    const db = new UserDB()
-
-    if (db.signUp(newUser) === null ) {
-      $('#status').text('Email is already in use.')
-      $('#status').css({ display: 'grid', color: 'red' })
-    } else {
-      $('#status').text('User successfully created!')
-      $('#status').css({ display: 'grid', color: 'green' })
-    }
   })
 
 
-  return `
+  return (`
     <div class="auth-form">
       <h1>Signup</h1>
       <form action="post">
@@ -73,7 +66,7 @@ const Signup = () => {
         <a href="#" id="login-page">Already have an account?</a>
       </form>
     </div>
-  `
+  `)
 }
 
 export default Signup

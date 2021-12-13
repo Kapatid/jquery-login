@@ -1,29 +1,28 @@
-import { updateElem } from "../../../modules/fake-react/index.js"
-import { Auth, User } from "../models.js"
+import { updateElem, waitElemsToLoad } from "../../../modules/fake-react/index.js"
+import { Auth } from "../models.js"
 import Signup from "./Signup.js"
 
 const Login = () => { 
 
-  $('#signup-page').on('click', () => {
-    updateElem('root', Signup)
+  waitElemsToLoad('.auth-form ', () => {
+    $('#signup-page').on('click', () => updateElem('#root', Signup) )
+  
+    $('form').submit((e) => {
+      e.preventDefault()
+  
+      const email = $('[name="email"]').val()
+      const password = $('[name="password"]').val()
+  
+      if (Auth.loginUser(email, password) === null) {
+        $('#status').text('Credentials are incorrect.')
+        $('#status').css({ display: 'grid', color: 'red' })
+      } else {
+        $('#status').css({ display: 'none' })
+      }
+    })
   })
 
-  $('form').submit((e) => {
-    e.preventDefault()
-
-    const email = $('[name="email"]').val()
-    const password = $('[name="password"]').val()
-
-    if (Auth.loginUser(email, password) === null) {
-      $('#status').text('Credentials are incorrect.')
-      $('#status').css({ display: 'grid', color: 'red' })
-    } else {
-      $('#status').css({ display: 'none' })
-    }
-  })
-
-
-  return `
+  return (`
     <div class="auth-form">
       <h1>LOGIN</h1>
       <form action="post">
@@ -42,7 +41,7 @@ const Login = () => {
         <a href="#" id="signup-page">Need an account?</a>
       </form>
     </div>
-  `
+  `)
 }
 
 export default Login
