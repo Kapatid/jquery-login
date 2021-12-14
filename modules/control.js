@@ -4,12 +4,14 @@
  * 
  * @param {[() => string]} pages 
  * @param {string} rootId 
- * @param {() => string} authPage 
+ * @param {() => string} authPage Route w/ auth
  */
 function render(pages, rootId, authPage) {
+  $(`#${rootId}`).empty()
+
   authPage !== undefined
-    ? $(`#${rootId}`).html(authPage)
-    : $(`#${rootId}`).html(pages[0])
+    ? $(`#${rootId}`).append(authPage)
+    : $(`#${rootId}`).append(pages[0])
 }
 
 /**
@@ -39,17 +41,17 @@ function useState(data) {
  * @param {Function} page 
  */
 function updateElem(selector , page) {
-  $(selector).html(page)
+  $(selector).empty()
+  $(selector).append(page)
 }
 
 /**
- * Execute codes after HTML strings have been loaded first
- * based on selector.
+ * Execute codes after given element is available.
  * 
- * @param {string} selector id/class
+ * @param {string} selector element to wait
  * @param {Function} func 
  */
-function waitElemsToLoad(selector, func) {
+function waitElemToLoad(selector, func) {
   const checkExist = setInterval(() => {
     if ($(selector).length) {
       func()
@@ -59,7 +61,7 @@ function waitElemsToLoad(selector, func) {
 }
 
 export {
-  render, useState, updateElem, waitElemsToLoad
+  render, useState, updateElem, waitElemToLoad
 }
 
 // (

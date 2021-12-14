@@ -4,10 +4,6 @@
   place-items: center;
 }
 
-.auth-form form {
-  margin-top: 1rem;
-}
-
 
 .auth-form section {
   position: relative;
@@ -37,12 +33,14 @@
 .auth-form #status {
   font-size: 0.8rem;
   font-style: italic;
+  font-weight: bold;
   display: none; 
-  margin: 10px 0px 10px 0px;
+  margin-top: 10px;
 }
 
+
 .auth-form button {
-  margin-top: 1rem;
+  margin-top: 2rem;
 }
 .auth-form a {
   font-size: small;

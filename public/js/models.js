@@ -12,7 +12,6 @@
 }
 
 export class Payroll {
-  #grossPay = 0
 
   constructor(
     options = { employeeName: '', payPerInOut: '', attendances: [] }
@@ -24,12 +23,7 @@ export class Payroll {
    * Returns grossPay based on number of attendances.
    * @returns {number} grossPay
    */
-  get grossPay() {
-    this.attendances.forEach(() => 
-      this.#grossPay = this.#grossPay + this.payPerInOut
-    )
-    return this.#grossPay
-  }
+  get grossPay() { return this.attendances.length * this.payPerInOut }
 }
 
 
@@ -54,7 +48,6 @@ export class UserDB {
 
   constructor() {
     const localUsers = JSON.parse(localStorage.getItem('Users'))
-
     localUsers ? this.#users = localUsers : []
   }
 
@@ -70,10 +63,9 @@ export class UserDB {
    * @returns {null | User} User or null
    */
   signUp(user) {
-    const userExists = this.#users 
-      ? this.#users.some(u => u.email === user.email) : false
+    const userExists = this.findUser(user.email)
 
-    if (!userExists) {
+    if (userExists === null) {
       this.#users.push(user)
       localStorage.setItem('Users', JSON.stringify(this.#users))
 
@@ -96,19 +88,27 @@ export class UserDB {
 
     localStorage.setItem('Users', JSON.stringify(newList))
   }
+
+  /**
+   * 
+   * @param {string} email 
+   * @returns {User}
+   */
+  findUser(email) {
+    const userExists = this.#users.find(u => u.email === email)
+    return userExists ? userExists : null
+  }
 }
 
 
 export class Auth {
-  /**
-   * @returns {User} The currently logged in user.
-   */
+
   static get loggedInUser() {
     const result = JSON.parse(localStorage.getItem('LoggedIn'))
-    const obj = result 
-      ? new User({...result, payroll: new Payroll(result.payroll)}) : null
-
-    return obj
+      
+    return result 
+      ? new User({...result, payroll: new Payroll(result.payroll)}) 
+      : null
   }
 
   /**
@@ -118,17 +118,13 @@ export class Auth {
    */
   static loginUser(email, password) {
     const db = new UserDB()
-    const users = db.users
+    const userExists = db.findUser(email)
 
-    const userFound = users.find(
-      u => u.email === email && u.password === password
-    )
-
-    if (userFound) {
-      localStorage.setItem('LoggedIn', JSON.stringify(userFound))
+    if (userExists !== null && userExists.password === password) {
+      localStorage.setItem('LoggedIn', JSON.stringify(userExists))
       location.reload()
 
-      return userFound
+      return userExists
     } else return null
   }
 

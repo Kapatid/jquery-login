@@ -1,22 +1,23 @@
-import { updateElem, waitElemsToLoad } from "../../../modules/fake-react/index.js"
+import { updateElem, waitElemToLoad } from "../../../modules/control.js"
 import { Payroll, User, UserDB } from "../models.js"
 import Login from "./Login.js"
 
 const Signup = () => { 
 
-  waitElemsToLoad('.auth-form ', () => {
+  waitElemToLoad('.auth-form ', () => {
 
-    $('#login-page').on('click', () => updateElem('#root', Login) )
+    $('#login-page').on('click', () => updateElem('#root', Login))
 
     $('form').submit((e) => {
       e.preventDefault()
-
-      const firstName = $('[name="firstName"]').val().charAt(0).toUpperCase()
-        + firstName.slice(1)
-      const lastName = $('[name="lastName"]').val().charAt(0).toUpperCase() 
-        + lastName.slice(1)
-      const email = $('[name="email"]').val()
-      const password = $('[name="password"]').val()
+      
+      // Get form data
+      let firstName = $('[name="firstName"]').val().trim()
+      firstName = firstName.charAt(0).toUpperCase() + firstName.slice(1)
+      let lastName = $('[name="lastName"]').val().trim()
+      lastName = lastName.charAt(0).toUpperCase() + lastName.slice(1)
+      const email = $('[name="email"]').val().trim()
+      const password = $('[name="password"]').val().trim()
       
       const newUser = new User({ firstName, lastName, email, password,
         payroll: new Payroll({
@@ -42,6 +43,7 @@ const Signup = () => {
   return (`
     <div class="auth-form">
       <h1>Signup</h1>
+
       <form action="post">
         <section>
           <input type="text" name="firstName" placeholder=" " required>

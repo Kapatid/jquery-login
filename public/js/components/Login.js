@@ -1,17 +1,17 @@
-import { updateElem, waitElemsToLoad } from "../../../modules/fake-react/index.js"
+import { updateElem, waitElemToLoad } from "../../../modules/control.js"
 import { Auth } from "../models.js"
 import Signup from "./Signup.js"
 
 const Login = () => { 
 
-  waitElemsToLoad('.auth-form ', () => {
-    $('#signup-page').on('click', () => updateElem('#root', Signup) )
+  waitElemToLoad('.auth-form ', () => {
+    $('#signup-page').on('click', () => updateElem('#root', Signup))
   
     $('form').submit((e) => {
       e.preventDefault()
   
-      const email = $('[name="email"]').val()
-      const password = $('[name="password"]').val()
+      const email = $('[name="email"]').val().trim()
+      const password = $('[name="password"]').val().trim()
   
       if (Auth.loginUser(email, password) === null) {
         $('#status').text('Credentials are incorrect.')
