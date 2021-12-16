@@ -1,67 +1,32 @@
 /**
- * Inserts pages to HTML. 
- * The first argument will be considered as the home/main page.
+ * Inserts pages to HTML.
  * 
- * @param {[() => string]} pages 
- * @param {string} rootId 
- * @param {() => string} authPage Route w/ auth
+ * @param {() => string} page
+ * @param {string} rootId
  */
-function render(pages, rootId, authPage) {
-  $(`#${rootId}`).empty()
+function render(page, rootId) {
+  $(rootId).empty()
 
-  authPage !== undefined
-    ? $(`#${rootId}`).append(authPage)
-    : $(`#${rootId}`).append(pages[0])
-}
+  // Get the whole return block
+  const codes = page.toString().match(/return[^]*`/)[0]
 
-/**
- * Function for making observable variables.
- * 
- * @param {any} data 
- * @returns [getter, setter]
- */
-function useState(data) {
-  const p = new Proxy({ watch: data }, {
-    get: function(target, prop, receiver) {
-      return prop in target ? target[prop] : null
-    }
-  })
+  // Get the return value only
+  const htmlStrings = codes
+    .replace("return", "")
+    .replaceAll("+", "")
+    .replaceAll("`", "")
+    .replaceAll('"', "")
+    .replaceAll("\\n", "")
+    .trim()
+ 
+  $(rootId).append(htmlStrings)
 
-  let set = (n) => {
-    p.watch = n
-  }
-
-  return [p.watch, set]
-}
-
-/**
- * Update element based on selector.
- * 
- * @param {string} selector 
- * @param {Function} page 
- */
-function updateElem(selector , page) {
-  $(selector).empty()
-  $(selector).append(page)
-}
-
-/**
- * Execute codes after given element is available.
- * 
- * @param {string} selector element to wait
- * @param {Function} func 
- */
-function waitElemToLoad(selector, func) {
-  const checkExist = setInterval(() => {
-    if ($(selector).length) {
-      func()
-      clearInterval(checkExist)
-    }
-  }, 100)
+  // After inserting element run codes
+  page()
 }
 
 export {
-  render, useState, updateElem, waitElemToLoad
+  render
 }
 
 // (
