@@ -6,20 +6,13 @@
  */
 function render(page, rootId) {
   $(rootId).empty()
+  const funcString = page.toString();
 
-  // Get the whole return block
-  const codes = page.toString().match(/return[^]*`/)[0]
-
-  // Get the return value only
-  const htmlStrings = codes
-    .replace("return", "")
-    .replaceAll("+", "")
-    .replaceAll("`", "")
-    .replaceAll('"', "")
-    .replaceAll("\\n", "")
-    .trim()
+  // Get html string in return
+  const htmlStringArray = funcString
+    .match(/return[^]*`/)[0].match(/<.*>/g)
  
-  $(rootId).append(htmlStrings)
+  $(rootId).append(htmlStringArray.join(''))
 
   // After inserting element run codes
   page()
